@@ -1,0 +1,135 @@
+/* 
+    Document   : default
+    Created on : Mar 23, 2012, 12:36:52 PM
+    Author     : Rommel
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    margin: 0 auto;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 5;
+}
+
+h1 {
+    font-size: 1.6em;
+    font-weight: normal;
+    color: #ff3366;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1em;
+    margin-top:20px;
+}
+
+ul {
+}
+
+.ui-themeswitcher a.ui-selectonemenu-label-container {
+    text-decoration: none !important;
+}
+
+.ui-widget {
+    font-size: 12px !important;
+}
+
+.ui-layout-pane-north.ui-widget-content{
+    border: 0;
+}
+
+.ui-layout-pane.ui-widget-content{
+    border: 0;
+}
+
+
+.ui-layout-north .ui-layout-unit-content {
+    border: none;
+    padding: 0 0 0 0;
+    margin: 0 0 0 ;
+    overflow: hidden;
+
+}
+
+.ui-layout-center .ui-layout-unit-content {
+    border: none;
+    overflow: visible !important;
+}
+
+.ui-layout-pane-center .ui-layout-unit-content {
+    border: none;
+    padding: 0 0 0 0;
+    margin: 0 0 0 ;
+}
+
+
+
+.custom .ui-widget-content{
+    background-color: orange ;
+
+}
+
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+    vertical-align: top !important;
+}
+
+.alignTop {
+    vertical-align: top;
+}
+
+
+.myLayoutStyleClass .ui-layout-unit{
+    background: yellow;
+}
+
+.myLayoutStyleClass .ui-layout-unit-content{
+    border: 5;
+    border-color: black;
+}
+
+
+
+.ui-tabs .ui-tabs-panel{
+    padding: .5em .1em;
+}
+
+.ui-tabs{
+    border: 0;
+}
+
+td.right {
+    text-align: right;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.ui-dt-c{
+    padding: 0;
+}
+.ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {
+    border-width: 1px 0;
+}
+
+.amount-col{
+    text-align: right;
+}
+
+

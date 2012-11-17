@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>
+            <ui:insert name="title">Count Simple Accounting</ui:insert>
+        </title>
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/faces/theme/default.css" />
+        <ui:insert name="head"></ui:insert>
+        <style type="text/css">
+            .ui-megamenu .ui-menu-child .ui-menu-list {
+                width: 150px;
+            }
+            .ui-layout-north {
+                z-index:20 !important;
+                overflow:visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow:visible !important;
+            }
+        </style>
+    </h:head >
+    <h:body style="width: 960px;">
+        <div id="header" style="font-family: Tahoma;">
+            <p:graphicImage value="/images/prime_logo.gif"/>
+            <br/>
+        </div>
+        <p:layout id="layout" style="min-height:600px">
+            
+            <p:layoutUnit position="north" maxSize="40" gutter="0" >
+                <h:form>
+                    <p:tabMenu activeIndex="#{activeIndex}">
+                        <p:menuitem value="Dashboard" action="dashboard" icon="ui-icon-star" ajax="false"/>
+                        <p:menuitem value="Accounts" action="accounts" icon="ui-icon-search" ajax="false"/>
+                        <p:menuitem value="Reports" action="reports" icon="ui-icon-document" ajax="false"/>
+                        <p:menuitem value="Advisor" action="contacts" icon="ui-icon-person" ajax="false"/>
+                        <p:menuitem value="Contacts" action="contacts" icon="ui-icon-person" ajax="false"/>
+                        <p:menuitem value="Settings" action="settings" icon="ui-icon-wrench" ajax="false"/>
+                    </p:tabMenu>
+                </h:form>
+            </p:layoutUnit>
+            <p:layoutUnit position="center" style="border: 0;">
+                <ui:insert name="content">Default Content</ui:insert>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+
+</html>

@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="5" />
+    <ui:define name="title">
+        Organization
+    </ui:define>
+    <ui:define name="content">
+        <p:breadCrumb>
+            <p:menuitem value="Dashboard" url="dashboard.jsf" />
+            <p:menuitem value="General Settings" url="settings.jsf" />
+        </p:breadCrumb>
+        <h1>Organization Settings</h1>
+        <p:separator/>
+        <h:form>
+            <p:messages showDetail="true" autoUpdate="true"/>
+            <p:panel header="Organization Name and Type">
+                <p:panelGrid columns="4" styleClass="noBorders" >
+                    <p:outputLabel for="it1" value="Display Name" style="font-weight: bold;"/>
+                    <p:outputLabel for="it2" value="Legal / Trading Name" style="font-weight: bold;"/>
+                    <p:outputLabel for="som1" value="Organization Type" style="font-weight: bold;"/>
+                    <p:outputLabel for="it4" value="What is your line of business?" style="font-weight: bold;"/>
+                    <p:inputText id="it1" value="#{organizationEditBean.organization.displayName}" size="30"/>
+                    <p:inputText id="it2" value="#{organizationEditBean.organization.legalName}" required="true" size="30"/>
+                    <p:selectOneMenu value="#{organizationEditBean.organization.orgType}" id="som1">
+                        <f:selectItem itemLabel="Company" itemValue="Company" />
+                        <f:selectItem itemLabel="Partnership" itemValue="Partnership" />
+                        <f:selectItem itemLabel="Club or Society" itemValue="Club" />
+                        <f:selectItem itemLabel="Charity" itemValue="Charity" />
+                        <f:selectItem itemLabel="Person" itemValue="Person" />
+                    </p:selectOneMenu>
+                    <p:inputText id="it4" value="#{organizationEditBean.organization.businessLine}" required="true" size="30"/>
+                    <h:outputText value="Name as it should appear in Count"/>
+                    <h:outputText value="Official name to appear on your &lt;br/&gt;reports and invoices" escape="false" />
+                    <p:spacer/>
+                    <h:outputText value="e.g. Florist, Architect, Restaurant"/>
+                </p:panelGrid>
+            </p:panel>
+            <p:spacer height="5"/>
+            <p:panel header="Contact Details">
+                <p:panelGrid columns="3" columnClasses="alignTop,alignTop,alignTop" styleClass="noBorders">
+                    <p:panelGrid columns="3" styleClass="noBorders" cellpadding="0 2">
+                        <p:spacer/>
+                        <h:outputText value="Postal Address" style="font-weight: bold;"/>
+                        <h:outputText value="Shipping Address" style="font-weight: bold;"/>
+                        <p:outputLabel value="Attention:" for="it5" style="text-align: right"/>
+                        <p:inputText id="it5" value="#{organizationEditBean.organization.poAttentionTo}" size="30"/>
+                        <p:inputText value="#{organizationEditBean.organization.saAttentionTo}" size="30"/>
+                        <h:outputLabel value="Street Address or PO Box" for="it6"/>
+                        <p:inputText id="it6" value="#{organizationEditBean.organization.poAddressLine1}" size="30"/>
+                        <p:inputText value="#{organizationEditBean.organization.saAddressLine1}" size="30"/>
+                        <p:outputLabel value="Town/City" for="it7"/>
+                        <p:inputText id="it7" value="#{organizationEditBean.organization.poCity}" size="30"/>
+                        <p:inputText value="#{organizationEditBean.organization.saCity}" size="30"/>
+                        <p:outputLabel value="State/Region" for="it8"/>
+                        <p:inputText id="it8" value="#{organizationEditBean.organization.poRegion}" size="30"/>
+                        <p:inputText value="#{organizationEditBean.organization.saRegion}" size="30"/>
+                        <p:outputLabel value="Postal/Zip Code" for="it9"/>
+                        <p:inputText id="it9" value="#{organizationEditBean.organization.poZipCode}" size="30"/>
+                        <p:inputText value="#{organizationEditBean.organization.saZipCode}" size="30"/>
+                        <p:outputLabel value="Country" for="it10"/>
+                        <p:inputText id="it10" value="#{organizationEditBean.organization.poCountry}" size="30"/>
+                        <p:inputText value="#{organizationEditBean.organization.saCountry}" size="30"/>
+
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" styleClass="noBorders">
+                        <p:spacer/>
+                        <h:outputText value="Communications" style="font-weight: bold;"/>
+                        <h:outputText value="Telephone"/>
+                        <p:inputText value="#{organizationEditBean.organization.telephone}"/>
+                        <h:outputText value="Fax"/>
+                        <p:inputText value="#{organizationEditBean.organization.fax}"/>
+                        <h:outputText value="Mobile"/>
+                        <p:inputText value="#{organizationEditBean.organization.mobile}"/>
+                        <h:outputText value="Email"/>
+                        <p:inputText value="#{organizationEditBean.organization.email}"/>
+                        <p:outputLabel value="GL Account" for="basicPojo"/>
+                        <p:autoComplete value="#{accountsBean.account}" 
+                                        id="basicPojo" completeMethod="#{accountsBean.complete}"
+                                        var="a" itemLabel="#{a.code}: #{a.name}" itemValue="#{a}" 
+                                        converter="#{accountsBean.converter}" forceSelection="true"
+                                        dropdown="true" maxResults="15" size="15"/>
+
+                    </p:panelGrid>
+                </p:panelGrid>
+            </p:panel>
+            <p:separator/>
+            <p:panelGrid columns="2" styleClass="noBorders">
+                <p:commandButton value="Save" icon="ui-icon-check" action="#{organizationEditBean.save}" ajax="false"/>
+                <p:commandButton type="reset" value="Reset" icon="ui-icon-cancel" />
+            </p:panelGrid>
+        </h:form>
+        <p:separator/>
+    </ui:define>
+</ui:composition>
+

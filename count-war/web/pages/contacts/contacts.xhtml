@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="4" />
+    <ui:define name="content">
+        <h1>Contacts</h1>
+        <p:separator/>
+        <h:form id="form">
+            <p:messages showDetail="true" autoUpdate="true"/>
+            <p:tabView id="tabView" var="tab" value="#{contactsTabBean.tabs}" 
+                       activeIndex="#{contactsTabBean.activeIndex}" dynamic="true">
+                <p:ajax event="tabChange" listener="#{contactsTabBean.onTabChange}" />
+                <p:tab id="tab" title="#{tab[0]}"> 
+                    <p:dataTable id="t1" var="contact" value="#{contactsTabBean.contactSearchBean[tab[0]].lazyDataModel}"
+                                 paginator="true" rows="15" paginatorPosition="bottom"
+                                 rowsPerPageTemplate="10,15,20"
+                                 selection="#{contactsTabBean.contactSearchBean[tab[0]].selection}"
+                                 widgetVar="#{tab[1]}"
+                                 lazy="true">
+                        <f:facet name="header" class="alignRight">
+                            <p:toolbar>
+                                <p:toolbarGroup align="left">
+                                    <p:commandButton value="Add to Group"
+                                                     oncomplete="handleShowAddtoGroupDialogRequest(xhr, status, args)"
+                                                     process="t1" rendered="#{tab[0] eq 'All' or tab[0] eq 'Customers' or tab[0] eq 'Suppliers'}"
+                                                     actionListener="#{contactsTabBean.showAddToGroupDialog}"/>
+                                    <p:commandButton value="Move to Group"
+                                                     oncomplete="handleShowMovetoGroupDialogRequest(xhr, status, args)"
+                                                     process="t1" rendered="#{tab[0] ne 'All' and tab[0] ne 'Employees' and tab[0] ne 'Customers' and tab[0] ne 'Suppliers'}"
+                                                     actionListener="#{contactsTabBean.showAddToGroupDialog}"/>
+                                    <p:commandButton value="Delete Group"
+                                                     onclick="confirmation.show()"
+                                                     rendered="#{tab[0] ne 'All' and tab[0] ne 'Employees' and tab[0] ne 'Customers' and tab[0] ne 'Suppliers'}"
+                                                     type="button"/>
+                                    <p:separator />
+                                    <p:commandButton title="Export" icon="ui-icon-print" ajax="false">
+                                        <p:dataExporter type="xls" target="t1" fileName="#{tab[0]}"/>
+                                    </p:commandButton>
+                                </p:toolbarGroup>
+
+                                <p:toolbarGroup align="right">
+
+                                    <h:outputText value="Search all fields:" />
+                                    <p:inputText id="globalFilter" onkeyup="#{tab[1]}.filter()" style="width:200px" />
+
+                                </p:toolbarGroup>
+
+                            </p:toolbar>
+
+
+                        </f:facet>
+
+                        <p:column selectionMode="multiple" style="width:18px" />  
+
+                        <p:column headerText="Name" sortBy="#{contact.name}">
+                            <p:commandLink process="@this" action="edit" ajax="false">
+                                <h:outputText value="#{contact.name}" />
+                                <f:setPropertyActionListener value="#{contact.contactId}" target="#{flash['contactId']}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column headerText="Email" sortBy="#{contact.email}">
+                            <h:outputText value="#{contact.email}" />
+                        </p:column>
+                        <p:column headerText="Phone No" sortBy="#{contact.telephone}">
+                            <h:outputText value="#{contact.telephone}" />
+                        </p:column>
+                        <p:column headerText="Payables" rendered="#{tab[0] ne 'Customers' and tab[0] ne 'Employees'}">
+                            <h:outputText value="" />
+                        </p:column>
+                        <p:column headerText="Overdue Payables" rendered="#{tab[0] ne 'Customers' and tab[0] ne 'Employees'}">
+                            <h:outputText value="" />
+                        </p:column>
+                        <p:column headerText="Receivables" rendered="#{tab[0] ne 'Suppliers' and tab[0] ne 'Employees'}">
+                            <h:outputText value="" />
+                        </p:column>
+                        <p:column headerText="Overdue Receivables" rendered="#{tab[0] ne 'Suppliers' and tab[0] ne 'Employees'}">
+                            <h:outputText value="" />
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:tab>
+
+            </p:tabView>
+        </h:form>
+        <p:dialog id="dialog1" header="Group Contacts" widgetVar="dlg1" 
+                  modal="true" appendToBody="true" dynamic="true">
+
+            <h:form id="dlgform1">
+                <h:panelGroup id="pg1">
+                    <p:messages autoUpdate="true" showDetail="true" for="dialog1"/>
+                    <p:panelGrid columns="3" styleClass="noBorders">
+                        <h:outputText value="Add to an existing group"/>
+                        <p:spacer/>
+                        <h:outputText value="Add to a new Group"/>
+                        <p:selectOneMenu value="#{contactsTabBean.selectedGroup}" 
+                                         converter="#{contactsTabBean.contactGroupConverter}">
+                            <f:selectItem itemLabel="Select One" itemValue="" /> 
+                            <f:selectItems value="#{contactsTabBean.contactGroups}" var="group" itemLabel="#{group.name}" itemValue="#{group}"/>
+                        </p:selectOneMenu>
+                        <h:outputText value="or"/>
+                        <p:inputText value="#{contactsTabBean.newGroup}"/>                   
+                    </p:panelGrid>
+                    <p:separator/>
+
+                </h:panelGroup>
+                <p:panelGrid columns="2" styleClass="noBorders">
+                    <p:commandButton  value="Save" icon="ui-icon-check"
+                                      oncomplete="handleAddToGroupRequest(xhr, status, args)"
+                                      update="dlgform1:pg1 :form:tabView"
+                                      actionListener="#{contactsTabBean.addToGroup}"/>
+                    <p:commandButton  value="Cancel" onclick="dlg1.hide()"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dialog2" header="Group Contacts" widgetVar="dlg2" 
+                  modal="true" appendToBody="true" dynamic="true">
+
+            <h:form id="dlgform2">
+                <h:panelGroup id="pg2">
+                    <p:messages autoUpdate="true" showDetail="true" for="dialog2"/>
+                    <p:panelGrid columns="3" styleClass="noBorders">
+                        <h:outputText value="Add to an existing group"/>
+                        <p:spacer/>
+                        <h:outputText value="Add to a new Group"/>
+                        <p:selectOneMenu value="#{contactsTabBean.selectedGroup}" 
+                                         converter="#{contactsTabBean.contactGroupConverter}">
+                            <f:selectItem itemLabel="Select One" itemValue="" /> 
+                            <f:selectItems value="#{contactsTabBean.contactGroups}" var="group" itemLabel="#{group.name}" itemValue="#{group}"/>
+                        </p:selectOneMenu>
+                        <h:outputText value="or"/>
+                        <p:inputText value="#{contactsTabBean.newGroup}"/>                   
+                    </p:panelGrid>
+                    <p:separator/>
+
+                </h:panelGroup>
+                <p:panelGrid columns="2" styleClass="noBorders">
+                    <p:commandButton  value="Save" icon="ui-icon-check"
+                                      oncomplete="handleMoveToGroupRequest(xhr, status, args)"
+                                      update="dlgform2:pg2 :form:tabView"
+                                      actionListener="#{contactsTabBean.moveToGroup}"/>
+                    <p:commandButton  value="Cancel" onclick="dlg2.hide()"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:confirmDialog id="confirmDialog" message="Are you sure you want to delete this group? (Deleting a group does not delete any contacts)"
+                         header="Delete Group" severity="alert" 
+                         widgetVar="confirmation" appendToBody="true">                           
+            <p:commandButton id="confirm" value="Yes Sure" oncomplete="confirmation.hide()" 
+                             actionListener="#{contactsTabBean.deleteActiveGroup}" 
+                             update="form:tabView"/>
+            <p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" /> 			
+        </p:confirmDialog>        
+
+        <script type="text/javascript">
+            /* <![CDATA[ */
+            function handleShowAddtoGroupDialogRequest(xhr, status, args) {          
+                if(!args.validationFailed && args.showAddToGroupDialog) {
+                    dlg1.show();
+                } 
+            }
+            function handleShowMovetoGroupDialogRequest(xhr, status, args) {
+                if(!args.validationFailed && args.showAddToGroupDialog) {
+                    dlg2.show();           
+                } 
+            }
+            function handleAddToGroupRequest(xhr, status, args) {
+                if(args.success){
+                    dlg1.hide();
+                }
+            }
+            function handleMoveToGroupRequest(xhr, status, args) {
+                if(args.success){
+                    dlg2.hide();
+                }
+            }
+            
+            
+            /* ]]> */
+        </script>
+    </ui:define>
+</ui:composition>
+

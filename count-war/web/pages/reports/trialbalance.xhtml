@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:param name="activeIndex" value="2" />
+    <ui:define name="content">
+        <h:form>
+            <p:breadCrumb>
+                <p:menuitem value="Dashboard" action="dashboard" ajax="false"/>
+                <p:menuitem value="All Reports" action="reports" ajax="false"/>
+            </p:breadCrumb>
+            <h1>Trial Balance</h1>
+            <p:separator/>
+
+            <p:panelGrid id="pg2" columns="7" styleClass="noBorders">
+                <p:outputLabel value="Start Date" for="startDate"/>
+                <p:outputLabel value="Start Date" for="endDate"/>
+                <p:outputLabel value="Start Date" for="output"/>
+                <p:spacer/>
+                <p:spacer/>
+                <p:spacer/>
+                <p:spacer/>
+                <p:calendar id="startDate" value="#{trialBalanceBean.startDate}" pattern="dd/MM/yyyy"/>
+                <p:calendar id="endDate" value="#{trialBalanceBean.endDate}" pattern="dd/MM/yyyy"/>
+                <p:selectOneMenu id="output" value="#{trialBalanceBean.output}">
+                    <f:selectItem itemLabel="PDF" itemValue="PDF"/>
+                    <f:selectItem itemLabel="Word" itemValue="docx"/>
+                    <f:selectItem itemLabel="MS Excel" itemValue="xlsx"/>
+                    <f:selectItem itemLabel="ODT" itemValue="ODT"/>
+                </p:selectOneMenu>
+                <p:commandButton value="Run" oncomplete="handleRunReportRequest(xhr, status, args)"
+                                 actionListener="#{trialBalanceBean.runReport}" update="trialbalance pg2"/>
+                <p:commandButton value="Publish" oncomplete="handleRunReportRequest(xhr, status, args)"
+                                 actionListener="#{trialBalanceBean.runReport}" update="trialbalance" rendered="#{not empty trialBalanceBean.data}"/>
+                <p:commandButton value="Print" oncomplete="handleRunReportRequest(xhr, status, args)"
+                                 actionListener="#{trialBalanceBean.runReport}" update="trialbalance"
+                                 rendered="#{not empty trialBalanceBean.data}"/>
+                <p:commandButton actionListener="#{pprBean.savePerson}" id="iconOnly"
+                            icon="ui-icon-disk" title="Icon Only" rendered="#{not empty trialBalanceBean.data}"/>
+            </p:panelGrid>
+
+            <p:separator/>
+            <p:dataTable id="trialbalance" value="#{trialBalanceBean.data}" var="var">
+                <p:column headerText="Code" style="#{empty var[0]?'font-weight: bold':''}">
+                    <h:outputText value="#{var[0]}"/>
+                </p:column>
+                <p:column headerText="Description" style="#{empty var[0]?'font-weight: bold':''}">
+                    <h:outputText value="#{var[1]}" />
+                </p:column>
+                <p:column headerText="Beginning Balance" styleClass="amount-col" style="#{empty var[0]?'font-weight: bold':''}">
+                    <h:outputText value="#{var[2]}">
+                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Debit" styleClass="amount-col" style="#{empty var[0]?'font-weight: bold':''}">
+                    <h:outputText value="#{var[3]}">
+                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Credit" styleClass="amount-col" style="#{empty var[0]?'font-weight: bold':''}">
+                    <h:outputText value="#{var[4]}">
+                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="EndingBalance" styleClass="amount-col" style="#{empty var[0]?'font-weight: bold':''}">
+                    <h:outputText value="#{var[5]}">
+                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+            <p:separator/>
+        </h:form>
+        <script type="text/javascript">
+            /* <![CDATA[ */
+            function handleRunReportRequest(xhr, status, args) {          
+                if(!args.validationFailed && args.url) {
+                    window.open(args.url,"count_report","menubar=no,status=no,location=no,titlebar=no,height=600,width=800");
+                } 
+            }
+            /* ]]> */
+        </script>
+    </ui:define>
+</ui:composition>
+

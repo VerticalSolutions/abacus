@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="1" />
+    <ui:define name="head">
+        <style type="text/css">
+            .ui-datatable th div.ui-dt-c, .ui-datatable .ui-datatable-data td div.ui-dt-c, .ui-datatable .ui-datatable-data-empty td div.ui-dt-c, .ui-datatable tfoot td div.ui-dt-c {
+                overflow: hidden;
+                padding: 1px ;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:breadCrumb>
+                <p:menuitem value="Dashboard" action="dashboard" ajax="false" />
+                <p:menuitem value="Accounts" action="accounts" ajax="false"/>
+            </p:breadCrumb>
+        </h:form>
+        <h1>Journal Entry</h1>
+        <p:separator/>
+        <h:form id="form">
+            <p:panel id="p1">
+                <h:panelGrid columns="4" columnClasses="alignTop,alignTop,alignTop,alignTop" cellpadding="2">
+                    <p:outputLabel value="Narration" for="it5" style="font-weight: bold;"/>
+                    <p:outputLabel value="Date" for="c1" style="font-weight: bold;"/>
+                    <p:outputLabel value="My Reference" for="it11" style="font-weight: bold;"/>
+                    <p:outputLabel value="Your Reference" for="it12" style="font-weight: bold;"/>
+                    <h:inputTextarea id="it5" value="#{entryEditBean.entry.description}" cols="60" rows="3"/>
+                    <p:calendar id="c1" value="#{entryEditBean.entry.transDate}" pattern="dd/MM/yyyy" size="10"/>
+                    <h:inputText id="it11" value="#{entryEditBean.entry.myReference}"/>
+                    <h:inputText id="it12" value="#{entryEditBean.entry.yourReference}"/>
+                </h:panelGrid>
+                <p:separator/>
+                <p:dataTable id="t1" var="line" value="#{entryEditBean.entry.lineList}">
+                    <p:column headerText="Description" style="height: 25px">
+                        <p:inputText id="desc" value="#{line.description}" style="width:98%"/>
+                        <f:facet name="footer">
+                            <p:commandButton value="Add a new line"/>                            
+                        </f:facet>
+                    </p:column>
+                    <p:column headerText="Account" style="width: 140px;">
+                        <p:autoComplete value="#{line.account}" style="white-space: nowrap"
+                                        id="ac1" completeMethod="#{accountsBean.complete}"
+                                        var="a" itemLabel="#{a.code}: #{a.name}" itemValue="#{a}" 
+                                        converter="#{accountsBean.converter}" forceSelection="true" 
+                                        maxResults="15"/>
+                    </p:column>
+                    <p:column headerText="Tax" style="width: 80px;">
+                        <h:outputText value="" />
+                    </p:column>
+                    <p:column headerText="Tracking" style="width: 80px;">
+                        <h:outputText value="" />
+                    </p:column>
+                    <p:column headerText="Debit" style="width: 80px; text-align: right;">
+                        <p:inputText id="debit" value="#{line.debit}" style="text-align: right" size="12">
+                            <p:ajax update="debit" listener="#{entryEditBean.updateSummary}"/>
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                        </p:inputText>
+                        <f:facet name="footer">  
+                            <h:outputText id="sumDebit" value="#{entryEditBean.entry.sumDebit}">
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </f:facet> 
+                    </p:column>
+                    <p:column headerText="Credit" style="width: 80px; text-align: right;">
+                        <p:inputText id="credit" value="#{line.credit}" style="text-align: right" size="12">
+                            <p:ajax update="debit credit" listener="#{entryEditBean.updateSummary}" />
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                        </p:inputText>
+                        <f:facet name="footer">
+                            <h:outputText id="sumCredit" value="#{entryEditBean.entry.sumCredit}"
+                                          style="text-align: right">
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </f:facet>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+
+            <p:separator/>
+            <p:panelGrid columns="2" styleClass="noBorders">
+                <p:commandButton value="Save" icon="ui-icon-check" actionListener="#{entryEditBean.save}" process="@form"/>
+                <p:commandButton value="Cancel" icon="ui-icon-cancel" action="list" immediate="true" ajax="false"/>
+            </p:panelGrid>
+        </h:form>
+        <p:separator/>
+    </ui:define>
+</ui:composition>
+

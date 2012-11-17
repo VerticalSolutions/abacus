@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="5" />
+    <ui:define name="title">
+        Dashboard
+    </ui:define>
+    <ui:define name="content">
+        <h1>General Settings</h1>
+        <p:separator/>
+        <h:form>
+            <p:panelGrid columns="1" styleClass="noBorders">
+                <h:commandLink id="cl1" value="Chart of Accounts" action="chartofaccounts" />
+                <h:commandLink id="cl2" value="Organization Settings" action="organization" />
+                <h:commandLink id="cl3" value="Conversion Balances" action="chartofaccounts" />
+                <h:commandLink id="cl4" value="Tax Rates" action="chartofaccounts" />
+            </p:panelGrid>
+        </h:form>
+        <p:separator/>
+    </ui:define>
+</ui:composition>
+

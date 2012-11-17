@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="1" />
+    <ui:define name="content">
+        <h1>General Ledger</h1>
+        <p:separator/>
+        <h:form id="form">
+            <p:messages showDetail="true" autoUpdate="true"/>
+
+            <p:tabView id="tabView" var="tab" value="#{ledgerTabsBean.tabs}" 
+                       activeIndex="#{ledgerTabsBean.activeIndex}" dynamic="true">
+                <p:ajax event="tabChange" listener="#{ledgerTabsBean.onTabChange}" />
+                <p:tab id="tab" title="#{tab[0]}"> 
+                    <h:panelGrid id="pg3" columns="5" >
+                        <h:outputText value="Narration"/>
+                        <h:outputText value="Start Date"/>
+                        <h:outputText value="End Date"/>
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:inputText id="desc" value="#{ledgerTabsBean.map[tab[0]].description}" size="30"/>
+                        <p:calendar id="startDate" value="#{ledgerTabsBean.map[tab[0]].startDate}" pattern="dd/MM/yyyy" size="12"/>
+                        <p:calendar id="endDate" value="#{ledgerTabsBean.map[tab[0]].endDate}" pattern="dd/MM/yyyy" size="12"/>
+                        <p:commandButton value="Search" process="desc,startDate,endDate"
+                                         oncomplete="#{tab[1]}.filter()" />
+                        <p:commandButton type="reset" value="Reset"/>
+                    </h:panelGrid>
+                    <p:dataTable id="t1" var="entry" value="#{ledgerTabsBean.map[tab[0]].lazyDataModel}"
+                                 paginator="true" rows="15" paginatorPosition="bottom"
+                                 rowsPerPageTemplate="10,15,20"
+                                 selection="#{ledgerTabsBean.map[tab[0]].selection}"
+                                 widgetVar="#{tab[1]}"
+                                 lazy="true">
+                        <f:facet name="header" class="alignRight">
+
+                        </f:facet>
+                        <p:column headerText="Status" sortBy="#{entry.status}">
+                            <h:outputText value="#{entry.status eq 'P'? 'Posted':entry.status eq 'D'? 'Draft':entry.status eq 'V'?'Void':'Unknown'}" />
+                        </p:column>
+                        <p:column headerText="Narration" sortBy="#{entry.description}">
+                            <p:commandLink process="@this" action="edit" ajax="false">
+                                <h:outputText value="#{entry.description}" />
+                                <f:setPropertyActionListener target="#{flash.glEntryId}" value="#{entry.id}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column headerText="Type" sortBy="#{entry.transType}">
+                            <h:outputText value="#{entry.transType}" />
+                        </p:column>
+                        <p:column headerText="My Reference" sortBy="#{entry.myReference}">
+                            <h:outputText value="#{entry.myReference}" />
+                        </p:column>
+                        <p:column headerText="Date" sortBy="#{entry.transDate}">
+                            <h:outputText value="#{entry.transDate}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Debit" style="text-align: right;">
+                            <h:outputText value="#{entry.totalDebit}" >
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Credit" style="text-align: right;">
+                            <h:outputText value="#{entry.totalCredit}" >
+                                <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:tab>
+
+            </p:tabView>
+        </h:form>      
+
+        <script type="text/javascript">
+            /* <![CDATA[ */
+            function handleShowAddtoGroupDialogRequest(xhr, status, args) {          
+                if(!args.validationFailed && args.showAddToGroupDialog) {
+                    dlg1.show();
+                } 
+            }
+            function handleShowMovetoGroupDialogRequest(xhr, status, args) {
+                if(!args.validationFailed && args.showAddToGroupDialog) {
+                    dlg2.show();           
+                } 
+            }
+            function handleAddToGroupRequest(xhr, status, args) {
+                if(args.success){
+                    dlg1.hide();
+                }
+            }
+            function handleMoveToGroupRequest(xhr, status, args) {
+                if(args.success){
+                    dlg2.hide();
+                }
+            }
+            
+            
+            /* ]]> */
+        </script>
+    </ui:define>
+</ui:composition>
+

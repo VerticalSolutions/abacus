@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="0" />
+    <ui:define name="title">
+        Dashboard
+    </ui:define>
+    <ui:define name="head">
+        <style type="text/css">
+            .ui-panel, div.ui-state-hover {
+                margin: 10px;
+                width:450px;
+            }
+
+            .ui-dashboard-column {
+                width:470px;
+            }
+            .ui-panel .ui-panel-content {
+                padding: 0.2em 0.2em;
+
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <h1>Tomas V Corporation</h1>
+        <hr/>
+        <h:form id="form">
+
+            <p:growl id="growl" showDetail="true" />
+            <p:dashboard id="board" model="#{dashboardBean.model}" style="margin: 5; padding: 2">
+                <p:ajax event="reorder" listener="#{dashboardBean.handleReorder}" update="growl" />
+
+                <p:panel id="banks" header="Bank Accounts">
+                    <ui:repeat value="#{dashboardBean.banks}" var="bank">
+                        <h:panelGrid columns="1">
+                            <p:layout id="layout2" style="height: 25px">
+                                <p:layoutUnit position="east" size="130">
+                                    <p:commandButton value="Manage Account"/>
+                                </p:layoutUnit>
+                                <p:layoutUnit position="center">
+                                </p:layoutUnit>
+                                <p:layoutUnit position="west">
+                                    <h:outputText value="#{bank.name}"/>
+                                </p:layoutUnit>
+                            </p:layout>
+                            <h:panelGrid columns="2">
+                                <h:panelGrid columns="1" styleClass="noBorders" width="126">
+                                    <h:outputText value="Statement Balance"/>
+                                    <h:outputText value="795.00"/>
+                                    <p:commandButton value="Reconcile Items" />
+                                    <p:separator/>
+                                    <h:outputText value="My Balance"/>
+                                    <h:outputText value="2795.00"/>
+                                </h:panelGrid>
+                                <p:lineChart value="#{dashboardBean.bankChartModels[bank.accountId]}" zoom="true" animate="true"
+                                             minY="0" maxY="#{dashboardBean.maxY}"
+                                             style="width:315px; height: 140px" widgetVar="#{bank.code}"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <p:separator/>
+                    </ui:repeat>
+                </p:panel>
+
+                <p:panel id="moneyin" header="Money Going In">
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Add Receivable Invoice"/>
+                        <h:panelGrid columns="2" cellpadding="2">
+                            <h:outputText value="Draft Invoices" />
+                            <h:outputText value="Overdue Invoices" />
+                            <h:outputText value="300.50" />
+                            <h:outputText value="16895.67" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <h:outputText value="Money Goin In" />
+                </p:panel>
+
+                <p:panel id="moneyout" header="Money Going Out">
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Add Payable Invoice"/>
+                        <h:panelGrid columns="2" cellpadding="2">
+                            <h:outputText value="Draft Invoices" />
+                            <h:outputText value="Overdue Invoices" />
+                            <h:outputText value="300.50" />
+                            <h:outputText value="16895.67" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:barChart id="stacked" value="#{chartBean.categoryModel}" legendPosition="nw" style="height:160px"
+                                stacked="true" barMargin="50" min="0" max="300" animate="true"/>
+                </p:panel>
+
+                <p:panel id="expenseclaims" header="Expense Claims">
+                    <h:outputText value="Expense Claims" />
+                </p:panel>
+            </p:dashboard>
+
+        </h:form>
+    </ui:define>
+</ui:composition>
+

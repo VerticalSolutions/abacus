@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="4" />
+    <ui:define name="title">
+        Organization
+    </ui:define>
+    <ui:define name="content">
+        <p:breadCrumb>
+            <p:menuitem value="Dashboard" url="dashboard.jsf" />
+            <p:menuitem value="Contacts" url="contacts.jsf" />
+        </p:breadCrumb>
+        <h1>Edit Contact</h1>
+        <p:separator/>
+        <h:form>
+            <p:panel>
+                <h:panelGrid columns="1" styleClass="noBorders" >
+                    <p:outputLabel value="Name" for="it5" style="font-weight: bold;"/>
+                    <p:inputText value="#{contactEditBean.contact.name}" size="40"/>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Contact Person">
+                <h:panelGrid columns="5" styleClass="noBorders">
+                    <p:outputLabel for="it1" value="First Name" style="font-weight: bold;"/>
+                    <p:outputLabel for="it2" value="Middle Name" style="font-weight: bold;"/>
+                    <p:outputLabel for="it3" value="Last Name" style="font-weight: bold;"/>
+                    <p:spacer width="20"/>
+                    <p:outputLabel for="it4" value="Email Address" style="font-weight: bold;"/>
+                    <p:inputText id="it1" value="#{contactEditBean.contact.firstName}" />
+                    <p:inputText id="it2" value="#{contactEditBean.contact.middleName}" />
+                    <p:inputText id="it3" value="#{contactEditBean.contact.lastName}" />
+                    <p:spacer width="20"/>
+                    <p:inputText id="it4" value="#{contactEditBean.contact.email}" size="30"/>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Contact Details">
+                <h:panelGrid columns="4" columnClasses="alignTop,alignTop,alignTop" styleClass="noBorders">
+                    <h:panelGrid columns="3">
+                        <p:spacer/>
+                        <h:outputText value="Postal Address" style="font-weight: bold;"/>
+                        <h:outputText value="Shipping Address" style="font-weight: bold;"/>
+                        <p:outputLabel value="Attention:" for="it5" style="text-align: right"/>
+                        <p:inputText id="it5" value="#{contactEditBean.contact.postalAttentionTo}" size="30"/>
+                        <p:inputText value="#{contactEditBean.contact.shippingAttentionTo}" size="30"/>
+                        <h:outputLabel value="Street Address or PO Box" for="it6"/>
+                        <p:inputText id="it6" value="#{contactEditBean.contact.postalAddressLine1}" size="30"/>
+                        <p:inputText value="#{contactEditBean.contact.shippingAddressLine1}" size="30"/>
+                        <p:outputLabel value="Town/City" for="it7"/>
+                        <p:inputText id="it7" value="#{contactEditBean.contact.postalCity}" size="30"/>
+                        <p:inputText value="#{contactEditBean.contact.shippingCity}" size="30"/>
+                        <p:outputLabel value="State/Region" for="it8"/>
+                        <p:inputText id="it8" value="#{contactEditBean.contact.postalRegion}" size="30"/>
+                        <p:inputText value="#{contactEditBean.contact.shippingRegion}" size="30"/>
+                        <p:outputLabel value="Postal/Zip Code" for="it9"/>
+                        <p:inputText id="it9" value="#{contactEditBean.contact.postalZipCode}" size="30"/>
+                        <p:inputText value="#{contactEditBean.contact.shippingZipCode}" size="30"/>
+                        <p:outputLabel value="Country" for="it10"/>
+                        <p:inputText id="it10" value="#{contactEditBean.contact.postalCountry}" size="30"/>
+                        <p:inputText value="#{contactEditBean.contact.shippingCountry}" size="30"/>
+
+                    </h:panelGrid>
+                    <p:spacer width="20"/>
+                    <h:panelGrid columns="2" styleClass="noBorders">
+                        <p:spacer/>
+                        <h:outputText value="Communications" style="font-weight: bold;"/>
+                        <h:outputText value="Telephone"/>
+                        <p:inputText value="#{contactEditBean.contact.telephone}"/>
+                        <h:outputText value="Fax"/>
+                        <p:inputText value="#{contactEditBean.contact.fax}"/>
+                        <h:outputText value="Mobile"/>
+                        <p:inputText value="#{contactEditBean.contact.mobile}"/>
+                        <h:outputText value="Skype Name"/>
+                        <p:inputText value="#{contactEditBean.contact.skype}"/>
+                        <p:outputLabel value="Website" for="website"/>
+                        <p:inputText value="#{contactEditBean.contact.website}" id="website"/>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:panel>
+            <p:separator/>
+            <p:panelGrid columns="2" styleClass="noBorders">
+                <p:commandButton value="Save" icon="ui-icon-check" action="#{contactEditBean.save}" ajax="false"/>
+                <p:commandButton value="Cancel" icon="ui-icon-cancel" action="list" immediate="true" ajax="false"/>
+            </p:panelGrid>
+        </h:form>
+        <p:separator/>
+    </ui:define>
+</ui:composition>
+

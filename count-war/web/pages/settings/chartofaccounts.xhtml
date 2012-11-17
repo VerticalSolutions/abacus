@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/templates/main-template.xhtml">
+    <ui:param name="activeIndex" value="5" />
+    <ui:define name="head">
+        <style type="text/css">
+            .ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {
+                border-color: inherit;
+                border-style: solid;
+                border-width: 1px 0;
+                margin: 0;
+                overflow: hidden;
+                padding: 0;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:breadCrumb>
+            <p:menuitem value="Dashboard" url="dashboard.jsf" />
+            <p:menuitem value="General Settings" url="settings.jsf" />
+        </p:breadCrumb>
+        <h1>Chart of Accounts</h1>
+        <p:separator/>
+        <h:form id="h1">
+            <p:dataTable id="t1" var="account" value="#{accountsBean.accountLazyDataModel}"
+                         paginator="true" rows="15"
+                         rowsPerPageTemplate="10,15,20,30"
+                         selection="#{accountsBean.selectedAccounts}"
+                         widgetVar="accountsTable"
+                         lazy="true"
+                         rowIndexVar="row"
+                         paginatorPosition="bottom">
+
+                <f:facet name="header" class="alignRight">
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton type="button" value="Add New Account" icon="ui-icon-document" />
+                            <p:commandButton type="button" value="Add Bank Account" icon="ui-icon-folder-open"/>
+                            <p:separator />
+                            <p:commandButton title="Export" icon="ui-icon-print" ajax="false">
+                                <p:dataExporter type="xls" target="t1" fileName="chartofaccounts" postProcessor="#{dataExportBean.postProcessXLS}"/>
+                            </p:commandButton>
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="accountsTable.filter()" style="width:200px" />
+                        </p:toolbarGroup>
+
+                    </p:toolbar>
+
+
+                </f:facet>
+                <p:column selectionMode="multiple" style="width:18px" />  
+
+                <p:column headerText="Code" sortBy="#{account.code}">
+                    <p:commandLink oncomplete="dlg2.show();"
+                                   process="@this" update=":dlgform:pg1">
+                        <h:outputText value="#{account.code}" />
+                        <f:setPropertyActionListener target="#{accountsBean.account}" value="#{account}" />
+                    </p:commandLink>
+                </p:column>
+
+                <p:column headerText="Name" sortBy="#{account.name}">
+                    <h:outputText value="#{account.name}" />
+                </p:column>
+                <p:column headerText="Account Type" sortBy="#{account.type}">
+                    <h:outputText value="#{account.type}" />
+                </p:column>
+                <p:column headerText="YTD" width="100">
+                    <h:outputText value="#{account.accountId * 1000}" />
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+        <p:separator/>
+        <p:growl id="growl" showDetail="true" life="3000" />  
+        <p:dialog id="modaldialog" header="Edit Account Details" widgetVar="dlg2" 
+                  modal="true" appendToBody="true" dynamic="true">
+
+            <h:form id="dlgform">
+                <h:panelGroup id="pg1">
+                    <p:messages globalOnly="false"/>
+                    <p:panelGrid columns="2">
+                        <p:panelGrid columns="1" styleClass="noBorders">
+                            <p:outputLabel for="acctType" value="Account Type" />
+                            <p:inputText id="acctType" value="#{accountsBean.account.type}" required="true" />
+                            <p:spacer height="5"/>
+                            <p:outputLabel for="acctCode" value="Code" />
+                            <p:inputText id="acctCode" value="#{accountsBean.account.code}" required="true" label="Code"
+                                         size="10"/>
+                            <p:spacer height="5"/>
+                            <p:outputLabel for="acctName" value="Name" />
+                            <p:inputText id="acctName" value="#{accountsBean.account.name}" 
+                                         required="true" label="Name" size="30"/>
+                            <p:outputLabel for="acctDesc" value="Description(Optional)" />
+                            <h:inputTextarea id="acctDesc" value="#{accountsBean.account.description}" 
+                                             required="true" label="Description" rows="3" cols="30"/>
+                            <p:spacer height="5"/>
+                            <h:panelGroup>
+                                <p:selectBooleanCheckbox id="dashboard" label="Dashboard"
+                                                         value="#{accountsBean.account.dashboard}"/>
+                                <p:outputLabel for="dashboard" value="Show in Dashboard" />
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:selectBooleanCheckbox id="expense" label="Expense Claims"
+                                                         value="#{accountsBean.account.expenseClaims}"/>
+                                <p:outputLabel for="expense" value="Show in Expense Claims" />
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:selectBooleanCheckbox id="payments" label="Dashboard"
+                                                         value="#{accountsBean.account.payments}"/>
+                                <p:outputLabel for="payments" value="Enable payments to this account" />
+                            </h:panelGroup>
+                        </p:panelGrid>
+                        <p:outputPanel>
+                            <p:graphicImage value="/images/account-help.png"/>  
+                        </p:outputPanel>
+                    </p:panelGrid>
+                </h:panelGroup>
+                <p:separator/>
+                <p:panelGrid columns="2" styleClass="noBorders">
+                    <p:commandButton  update="dlgform:pg1 :h1:t1" value="Save" icon="ui-icon-check" actionListener="#{accountsBean.saveAccount}"
+                                      oncomplete="handleLoginRequest(xhr, status, args)"/>
+                    <p:commandButton  update="dlgform:pg1" value="Cancel" 
+                                      onclick="dlg2.hide()"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if(args.validationFailed || !args.loggedIn) {
+                } else {
+                    dlg2.hide();
+                }
+            }
+        </script>
+    </ui:define>
+</ui:composition>
+
